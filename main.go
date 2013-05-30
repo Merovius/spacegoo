@@ -11,20 +11,20 @@ import (
 
 /* A single planet as reported by the server */
 type Planet struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X          int   `json:"x"`
+	Y          int   `json:"y"`
 	Production []int `json:"production"`
-	Ships []int `json:"ships"`
-	OwnerId int `json:"owner_id"`
-	Id int `json:"id"`
+	Ships      []int `json:"ships"`
+	OwnerId    int   `json:"owner_id"`
+	Id         int   `json:"id"`
 }
 
 /* The complete gamestate, we get each round */
 type GameState struct {
-	Round int `json:"round"`
-	MaxRounds int `json:"max_rounds"`
-	GameOver bool `json:"game_over"`
-	PlayerId int `json:"player_id"`
+	Round     int  `json:"round"`
+	MaxRounds int  `json:"max_rounds"`
+	GameOver  bool `json:"game_over"`
+	PlayerId  int  `json:"player_id"`
 	// TODO: fleets
 	// TODO: players
 	Planets []Planet `json:"planets"`
@@ -51,7 +51,7 @@ func NewGame(server string, user string, pass string) (*Game, error) {
 	log.Printf("logging in with user %s, pass %s\n", user, pass)
 	fmt.Fprintf(conn, "login %s %s\n", user, pass)
 
-	return &Game{ conn, r }, nil
+	return &Game{conn, r}, nil
 }
 
 // Get the next gamestate
@@ -70,7 +70,7 @@ func (g *Game) Next() (*GameState, error) {
 				log.Println(line)
 				continue
 			} else {
-				log.Println("unhandled: %s\n", line)
+				log.Printf("unhandled: %s\n", line)
 				continue
 			}
 		}
@@ -94,5 +94,5 @@ func (g *Game) Send(from Planet, to Planet, type1 uint, type2 uint, type3 uint) 
 
 // Do nothing
 func (g *Game) Nop() {
-	fmt.Fprintf(g.c, "nop\n");
+	fmt.Fprintf(g.c, "nop\n")
 }

@@ -31,6 +31,7 @@ type GameState struct {
 }
 
 type Game struct {
+	c net.Conn
 	r *bufio.Reader
 }
 
@@ -50,9 +51,10 @@ func NewGame(server string, user string, pass string) (*Game, error) {
 	log.Printf("logging in with user %s, pass %s\n", user, pass)
 	fmt.Fprintf(conn, "login %s %s\n", user, pass)
 
-	return &Game{ r }, nil
+	return &Game{ conn, r }, nil
 }
 
+// Get the next gamestate
 func (g *Game) Next() (*GameState, error) {
 	line, err := g.r.ReadString('\n')
 	if err != nil {
@@ -82,4 +84,14 @@ func (g *Game) Next() (*GameState, error) {
 		log.Printf("state received: %v\n", state)
 		return &state, nil
 	}
+}
+
+// Send "type1" ships of type 1… from planet "from" to planet "to"
+func (g *Game) Send(from Planet, to Planet, type1 uint, type2 uint, type3 uint) {
+	fmt.Fprintf(g.c, "send %d %d %d %d %d\n", from.Id, to.Id, type1, type2, type3)
+}
+
+// Do nothing
+func (g *Game) Nop() {
+	fmt.Fprintf(g.c, "nop\n");
 }

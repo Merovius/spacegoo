@@ -69,6 +69,10 @@ func (g *Game) Next() (*GameState, error) {
 			} else if strings.HasPrefix(line, "game starts.") {
 				log.Println(line)
 				continue
+			} else if strings.Contains(line, "please disconnect") {
+				log.Printf("%s\n", line)
+				g.c.Close()
+				return nil, fmt.Errorf("disconnected")
 			} else {
 				log.Printf("unhandled: %s\n", line)
 				continue

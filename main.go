@@ -9,6 +9,16 @@ import (
 	"strings"
 )
 
+/* A fleet */
+type Fleet struct {
+	Id     int    `json:"id"`
+	Owner  int    `json:"owner"`
+	Origin int    `json:"origin"`
+	Target int    `json:"target"`
+	Ships  [3]int `json:"ships"`
+	Eta    int    `json:"eta"`
+}
+
 /* A single planet as reported by the server */
 type Planet struct {
 	X          int   `json:"x"`
@@ -21,11 +31,11 @@ type Planet struct {
 
 /* The complete gamestate, we get each round */
 type GameState struct {
-	Round     int  `json:"round"`
-	MaxRounds int  `json:"max_rounds"`
-	GameOver  bool `json:"game_over"`
-	PlayerId  int  `json:"player_id"`
-	// TODO: fleets
+	Round     int     `json:"round"`
+	MaxRounds int     `json:"max_rounds"`
+	GameOver  bool    `json:"game_over"`
+	PlayerId  int     `json:"player_id"`
+	Fleets    []Fleet `json:"fleets"`
 	// TODO: players
 	Planets []Planet `json:"planets"`
 }

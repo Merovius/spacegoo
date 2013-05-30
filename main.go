@@ -56,12 +56,12 @@ func NewGame(server string, user string, pass string) (*Game, error) {
 
 // Get the next gamestate
 func (g *Game) Next() (*GameState, error) {
-	line, err := g.r.ReadString('\n')
-	if err != nil {
-		return nil, err
-	}
-
 	for {
+		line, err := g.r.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
+
 		if !strings.HasPrefix(line, "{") {
 			if strings.HasPrefix(line, "your current score:") {
 				log.Println(line)

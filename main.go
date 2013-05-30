@@ -70,7 +70,8 @@ func (g *Game) Next() (*GameState, error) {
 				log.Println(line)
 				continue
 			} else {
-				return nil, fmt.Errorf("unhandled: %s\n", line)
+				log.Println("unhandled: %s\n", line)
+				continue
 			}
 		}
 		var state GameState

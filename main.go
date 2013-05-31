@@ -17,12 +17,12 @@ type Fleets []*Fleet
 
 /* A fleet */
 type Fleet struct {
-	Id     int    `json:"id"`
-	Owner  int    `json:"owner"`
-	Origin int    `json:"origin"`
-	Target int    `json:"target"`
-	Ships  [3]int `json:"ships"`
-	Eta    int    `json:"eta"`
+	Id     int   `json:"id"`
+	Owner  int   `json:"owner"`
+	Origin int   `json:"origin"`
+	Target int   `json:"target"`
+	Ships  Ships `json:"ships"`
+	Eta    int   `json:"eta"`
 }
 
 /* A single planet as reported by the server */
@@ -49,6 +49,32 @@ type GameState struct {
 type Game struct {
 	c net.Conn
 	r *bufio.Reader
+}
+
+func (s *GameState) Copy() *GameState {
+	ret := &GameState{Round: s.Round, MaxRounds: s.MaxRounds, GameOver: s.GameOver, PlayerId: s.PlayerId}
+	ret.Fleets = make([]*Fleet, len(s.Fleets))
+	ret.Planets = make([]*Planet, len(s.Planets))
+	for _, f := range s.Fleets {
+		ret.Fleets = append(ret.Fleets, f.Copy())
+	}
+	for _, p := range s.Planets {
+		ret.Planets = append(ret.Planets, p.Copy())
+	}
+	return ret
+}
+
+func (p *Planet) Copy() *Planet {
+	ret := &Planet{X: p.X, Y: p.Y, OwnerId: p.OwnerId, Id: p.Id}
+	copy(ret.Production[:], p.Production[:])
+	copy(ret.Ships[:], p.Ships[:])
+	return ret
+}
+
+func (f *Fleet) Copy() *Fleet {
+	ret := &Fleet{Id: f.Id, Owner: f.Owner, Origin: f.Origin, Target: f.Target, Eta: f.Eta}
+	copy(ret.Ships[:], f.Ships[:])
+	return ret
 }
 
 // Connects to server with username user and password pass */

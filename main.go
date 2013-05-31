@@ -212,6 +212,24 @@ func (s GameState) TheirPlanets() (theirs []Planet) {
 	return
 }
 
+func (s GameState) EnemyPlanets() (enem []Planet) {
+	for _, p := range s.Planets {
+		if p.OwnerId != s.PlayerId && p.OwnerId != 0 {
+			enem = append(enem, p)
+		}
+	}
+	return
+}
+
+func (s GameState) NeutralPlanets() (neutr []Planet) {
+	for _, p := range s.Planets {
+		if p.OwnerId == 0 {
+			neutr = append(neutr, p)
+		}
+	}
+	return
+}
+
 func (p1 Planet) Dist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y

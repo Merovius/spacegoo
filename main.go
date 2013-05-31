@@ -181,3 +181,12 @@ func Simulate(mine, other Ships) (minenew, othernew Ships) {
 
 	return mineS.Ships(), otherS.Ships()
 }
+
+func (s GameState) MyPlanets() (my []Planet) {
+	for _, p := range s.Planets {
+		if p.OwnerId == s.PlayerId {
+			my = append(my, p)
+		}
+	}
+	return
+}

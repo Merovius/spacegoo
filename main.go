@@ -12,6 +12,7 @@ import (
 
 type Ships [3]int
 type fShips [3]float64
+type Fleets []*Fleet
 
 /* A fleet */
 type Fleet struct {
@@ -39,7 +40,7 @@ type GameState struct {
 	MaxRounds int       `json:"max_rounds"`
 	GameOver  bool      `json:"game_over"`
 	PlayerId  int       `json:"player_id"`
-	Fleets    []*Fleet  `json:"fleets"`
+	Fleets    Fleets    `json:"fleets"`
 	Planets   []*Planet `json:"planets"`
 	// TODO: players
 }
@@ -234,4 +235,22 @@ func (p1 *Planet) Dist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y
 	return math.Sqrt(dx*dx + dy*dy)
+}
+
+type fleetSorter struct {
+	f Fleets
+}
+
+func (fs fleetSorter) Len() int {
+	return len(fs.f)
+}
+
+func (fs fleetSorter) Less(i, j int) bool {
+	return fs.f[i].Eta < fs.f[j].Eta
+}
+
+func (fs fleetSorter) Swap(i, j int) {
+	t := fs.f[i]
+	fs.f[j] = fs.f[i]
+	fs.f[i] = t
 }

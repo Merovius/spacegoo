@@ -35,13 +35,13 @@ type Planet struct {
 
 /* The complete gamestate, we get each round */
 type GameState struct {
-	Round     int     `json:"round"`
-	MaxRounds int     `json:"max_rounds"`
-	GameOver  bool    `json:"game_over"`
-	PlayerId  int     `json:"player_id"`
-	Fleets    []Fleet `json:"fleets"`
+	Round     int       `json:"round"`
+	MaxRounds int       `json:"max_rounds"`
+	GameOver  bool      `json:"game_over"`
+	PlayerId  int       `json:"player_id"`
+	Fleets    []*Fleet  `json:"fleets"`
+	Planets   []*Planet `json:"planets"`
 	// TODO: players
-	Planets []Planet `json:"planets"`
 }
 
 type Game struct {
@@ -106,8 +106,8 @@ func (g *Game) Next() (*GameState, error) {
 }
 
 // Send "type1" ships of type 1… from planet "from" to planet "to"
-func (g *Game) Send(from Planet, to Planet, type1 uint, type2 uint, type3 uint) {
-	fmt.Fprintf(g.c, "send %d %d %d %d %d\n", from.Id, to.Id, type1, type2, type3)
+func (g *Game) Send(from *Planet, to *Planet, fleet Ships) {
+	fmt.Fprintf(g.c, "send %d %d %d %d %d\n", from.Id, to.Id, fleet[0], fleet[1], fleet[2])
 }
 
 // Do nothing
@@ -194,7 +194,7 @@ func Simulate(mine, other Ships) (minenew, othernew Ships) {
 	return mineS.Ships(), otherS.Ships()
 }
 
-func (s GameState) MyPlanets() (my []Planet) {
+func (s *GameState) MyPlanets() (my []*Planet) {
 	for _, p := range s.Planets {
 		if p.OwnerId == s.PlayerId {
 			my = append(my, p)
@@ -203,7 +203,7 @@ func (s GameState) MyPlanets() (my []Planet) {
 	return
 }
 
-func (s GameState) TheirPlanets() (theirs []Planet) {
+func (s *GameState) TheirPlanets() (theirs []*Planet) {
 	for _, p := range s.Planets {
 		if p.OwnerId != s.PlayerId {
 			theirs = append(theirs, p)
@@ -212,7 +212,7 @@ func (s GameState) TheirPlanets() (theirs []Planet) {
 	return
 }
 
-func (s GameState) EnemyPlanets() (enem []Planet) {
+func (s *GameState) EnemyPlanets() (enem []*Planet) {
 	for _, p := range s.Planets {
 		if p.OwnerId != s.PlayerId && p.OwnerId != 0 {
 			enem = append(enem, p)
@@ -221,7 +221,7 @@ func (s GameState) EnemyPlanets() (enem []Planet) {
 	return
 }
 
-func (s GameState) NeutralPlanets() (neutr []Planet) {
+func (s *GameState) NeutralPlanets() (neutr []*Planet) {
 	for _, p := range s.Planets {
 		if p.OwnerId == 0 {
 			neutr = append(neutr, p)
@@ -230,7 +230,7 @@ func (s GameState) NeutralPlanets() (neutr []Planet) {
 	return
 }
 
-func (p1 Planet) Dist(x, y float64) float64 {
+func (p1 *Planet) Dist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y
 	return math.Sqrt(dx*dx + dy*dy)

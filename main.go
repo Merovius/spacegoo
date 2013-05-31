@@ -7,6 +7,7 @@ import (
 	"log"
 	"math"
 	"net"
+	"sort"
 	"strings"
 )
 
@@ -253,4 +254,8 @@ func (fs fleetSorter) Swap(i, j int) {
 	t := fs.f[i]
 	fs.f[j] = fs.f[i]
 	fs.f[i] = t
+}
+
+func (f Fleets) Sort() {
+	sort.Sort(fleetSorter{f})
 }

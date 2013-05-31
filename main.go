@@ -27,8 +27,8 @@ type Fleet struct {
 type Planet struct {
 	X          int   `json:"x"`
 	Y          int   `json:"y"`
-	Production []int `json:"production"`
-	Ships      []int `json:"ships"`
+	Production Ships `json:"production"`
+	Ships      Ships `json:"ships"`
 	OwnerId    int   `json:"owner_id"`
 	Id         int   `json:"id"`
 }

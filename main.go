@@ -19,10 +19,10 @@ type Fleets []*Fleet
 type Fleet struct {
 	Id     int `json:"id"`
 	Owner  int `json:"owner"`
-	oid    int `json:"origin"`
-	tid    int `json:"target"`
-	Origin Planet
-	Target Planet
+	Oid    int `json:"origin"`
+	Tid    int `json:"target"`
+	Origin *Planet
+	Target *Planet
 	Ships  Ships `json:"ships"`
 	Eta    int   `json:"eta"`
 }
@@ -126,6 +126,10 @@ func (g *Game) Next() (*GameState, error) {
 		err = json.Unmarshal([]byte(line), &state)
 		if err != nil {
 			return nil, err
+		}
+		for _, f := range state.Fleets {
+			f.Target = state.Planets[f.Tid]
+			f.Origin = state.Planets[f.Oid]
 		}
 
 		//		log.Printf("state received: %v\n", state)

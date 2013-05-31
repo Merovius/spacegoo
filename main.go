@@ -183,7 +183,7 @@ func (s Ships) String() string {
 
 func Simulate(mine, other Ships) (minenew, othernew Ships) {
 	mineS := mine.float()
-	otherS := mine.float()
+	otherS := other.float()
 
 	for mineS.Sum() > 0 && otherS.Sum() > 0 {
 		new1 := battleRound(otherS, mineS)

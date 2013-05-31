@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"net"
 	"strings"
 )
@@ -198,4 +199,10 @@ func (s GameState) TheirPlanets() (theirs []Planet) {
 		}
 	}
 	return
+}
+
+func (p1 Planet) Dist(x, y float64) float64 {
+	dx := float64(p1.X) - x
+	dy := float64(p1.Y) - y
+	return math.Sqrt(dx*dx + dy*dy)
 }

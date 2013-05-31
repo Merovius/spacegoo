@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+type Ships [3]int
+type fShips [3]float64
+
 /* A fleet */
 type Fleet struct {
 	Id     int    `json:"id"`
@@ -109,4 +112,72 @@ func (g *Game) Send(from Planet, to Planet, type1 uint, type2 uint, type3 uint) 
 // Do nothing
 func (g *Game) Nop() {
 	fmt.Fprintf(g.c, "nop\n")
+}
+
+func battleRound(mine, other fShips) fShips {
+	for def_type := 0; def_type < 3; def_type += 1 {
+		for att_type := 0; att_type < 3; att_type += 1 {
+			c := (def_type - att_type) % 3
+			var multiplier float64
+			var absolute float64
+			switch c {
+			case 0:
+				multiplier = 0.1
+				absolute = 1
+			case 1:
+				multiplier = 0.25
+				absolute = 2
+			case 2:
+				multiplier = 0.01
+				absolute = 1
+			}
+
+			var more float64
+			if mine[att_type] > 0 {
+				more = 1
+			} else {
+				more = 0
+			}
+			other[def_type] -= (float64(mine[att_type]) * multiplier) + more*absolute
+		}
+		if other[def_type] < 0 {
+			other[def_type] = 0
+		}
+	}
+	return other
+}
+
+func (s Ships) Sum() int {
+	return s[0] + s[1] + s[2]
+}
+
+func (s Ships) float() (f fShips) {
+	for i := 0; i < 2; i++ {
+		f[i] = float64(s[i])
+	}
+	return
+}
+
+func (f fShips) Sum() float64 {
+	return f[0] + f[1] + f[2]
+}
+
+func (f fShips) Ships() (s Ships) {
+	for i := 0; i < 2; i++ {
+		s[i] = int(f[i])
+	}
+	return
+}
+
+func Simulate(mine, other Ships) (minenew, othernew Ships) {
+	mineS := mine.float()
+	otherS := mine.float()
+
+	for mineS.Sum() > 0 && otherS.Sum() > 0 {
+		new1 := battleRound(otherS, mineS)
+		otherS = battleRound(mineS, otherS)
+		mineS = new1
+	}
+
+	return mineS.Ships(), otherS.Ships()
 }

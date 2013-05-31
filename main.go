@@ -94,13 +94,13 @@ func (g *Game) Next() (*GameState, error) {
 		}
 		var state GameState
 		// decode the json
-//		log.Printf("parsing line %s\n", line)
+		//		log.Printf("parsing line %s\n", line)
 		err = json.Unmarshal([]byte(line), &state)
 		if err != nil {
 			return nil, err
 		}
 
-//		log.Printf("state received: %v\n", state)
+		//		log.Printf("state received: %v\n", state)
 		return &state, nil
 	}
 }

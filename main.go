@@ -190,3 +190,12 @@ func (s GameState) MyPlanets() (my []Planet) {
 	}
 	return
 }
+
+func (s GameState) TheirPlanets() (theirs []Planet) {
+	for _, p := range s.Planets {
+		if p.OwnerId != s.PlayerId {
+			theirs = append(theirs, p)
+		}
+	}
+	return
+}

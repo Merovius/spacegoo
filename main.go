@@ -177,6 +177,10 @@ func (f fShips) Ships() (s Ships) {
 	return
 }
 
+func (s Ships) String() string {
+	return fmt.Sprintf("(%d %d %d)", s[0], s[1], s[2])
+}
+
 func Simulate(mine, other Ships) (minenew, othernew Ships) {
 	mineS := mine.float()
 	otherS := mine.float()

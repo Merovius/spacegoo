@@ -17,10 +17,12 @@ type Fleets []*Fleet
 
 /* A fleet */
 type Fleet struct {
-	Id     int   `json:"id"`
-	Owner  int   `json:"owner"`
-	Origin int   `json:"origin"`
-	Target int   `json:"target"`
+	Id     int `json:"id"`
+	Owner  int `json:"owner"`
+	oid    int `json:"origin"`
+	tid    int `json:"target"`
+	Origin Planet
+	Target Planet
 	Ships  Ships `json:"ships"`
 	Eta    int   `json:"eta"`
 }
@@ -53,8 +55,6 @@ type Game struct {
 
 func (s *GameState) Copy() *GameState {
 	ret := &GameState{Round: s.Round, MaxRounds: s.MaxRounds, GameOver: s.GameOver, PlayerId: s.PlayerId}
-	ret.Fleets = make([]*Fleet, len(s.Fleets))
-	ret.Planets = make([]*Planet, len(s.Planets))
 	for _, f := range s.Fleets {
 		ret.Fleets = append(ret.Fleets, f.Copy())
 	}
@@ -106,10 +106,10 @@ func (g *Game) Next() (*GameState, error) {
 
 		if !strings.HasPrefix(line, "{") {
 			if strings.HasPrefix(line, "your current score:") {
-				log.Println(line)
+				log.Printf("%s", line)
 				continue
 			} else if strings.HasPrefix(line, "game starts.") {
-				log.Println(line)
+				log.Printf(line)
 				continue
 			} else if strings.Contains(line, "please disconnect") {
 				log.Printf("%s\n", line)

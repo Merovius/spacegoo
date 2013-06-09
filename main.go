@@ -1,150 +1,55 @@
 package spacegoo
 
 import (
-	"bufio"
-	"encoding/json"
 	"fmt"
-	"log"
 	"math"
-	"net"
 	"sort"
-	"strings"
 )
 
 type Ships [3]int
 type fShips [3]float64
-type Fleets []*Fleet
+type Fleets []Fleet
 
-/* A fleet */
-type Fleet struct {
-	Id     int `json:"id"`
-	Owner  int `json:"owner"`
-	Oid    int `json:"origin"`
-	Tid    int `json:"target"`
-	Origin *Planet
-	Target *Planet
-	Ships  Ships `json:"ships"`
-	Eta    int   `json:"eta"`
-}
+type Player int
 
-/* A single planet as reported by the server */
-type Planet struct {
-	X          int   `json:"x"`
-	Y          int   `json:"y"`
-	Production Ships `json:"production"`
-	Ships      Ships `json:"ships"`
-	OwnerId    int   `json:"owner_id"`
-	Id         int   `json:"id"`
+const (
+	Neutral Player = iota
+	We
+	They
+)
+
+type Bot interface {
+	Move(GameState) (Move, error)
 }
 
 /* The complete gamestate, we get each round */
 type GameState struct {
-	Round     int       `json:"round"`
-	MaxRounds int       `json:"max_rounds"`
-	GameOver  bool      `json:"game_over"`
-	PlayerId  int       `json:"player_id"`
-	Fleets    Fleets    `json:"fleets"`
-	Planets   []*Planet `json:"planets"`
-	// TODO: players
+	Round     int
+	MaxRounds int
+	GameOver  bool
+	Fleets    Fleets
+	Planets   []Planet
+	pid       int
 }
 
-type Game struct {
-	c net.Conn
-	r *bufio.Reader
+/* A fleet */
+type Fleet struct {
+	Id     int
+	Owner  Player
+	Origin Planet
+	Target Planet
+	Ships  Ships
+	Eta    int
 }
 
-func (s *GameState) Copy() *GameState {
-	ret := &GameState{Round: s.Round, MaxRounds: s.MaxRounds, GameOver: s.GameOver, PlayerId: s.PlayerId}
-	for _, f := range s.Fleets {
-		ret.Fleets = append(ret.Fleets, f.Copy())
-	}
-	for _, p := range s.Planets {
-		ret.Planets = append(ret.Planets, p.Copy())
-	}
-	return ret
-}
-
-func (p *Planet) Copy() *Planet {
-	ret := &Planet{X: p.X, Y: p.Y, OwnerId: p.OwnerId, Id: p.Id}
-	copy(ret.Production[:], p.Production[:])
-	copy(ret.Ships[:], p.Ships[:])
-	return ret
-}
-
-func (f *Fleet) Copy() *Fleet {
-	ret := &Fleet{Id: f.Id, Owner: f.Owner, Origin: f.Origin, Target: f.Target, Eta: f.Eta}
-	copy(ret.Ships[:], f.Ships[:])
-	return ret
-}
-
-// Connects to server with username user and password pass */
-func NewGame(server string, user string, pass string) (*Game, error) {
-	conn, err := net.Dial("tcp", server)
-	if err != nil {
-		return nil, err
-	}
-
-	r := bufio.NewReader(conn)
-	_, err = r.ReadString('\n')
-	if err != nil {
-		return nil, err
-	}
-
-	log.Printf("logging in with user %s, pass %s\n", user, pass)
-	fmt.Fprintf(conn, "login %s %s\n", user, pass)
-
-	return &Game{conn, r}, nil
-}
-
-// Get the next gamestate
-func (g *Game) Next() (*GameState, error) {
-	for {
-		line, err := g.r.ReadString('\n')
-		if err != nil {
-			return nil, err
-		}
-
-		if !strings.HasPrefix(line, "{") {
-			if strings.HasPrefix(line, "your current score:") {
-				log.Printf("%s", line)
-				continue
-			} else if strings.HasPrefix(line, "game starts.") {
-				log.Printf(line)
-				continue
-			} else if strings.Contains(line, "please disconnect") {
-				log.Printf("%s\n", line)
-				g.c.Close()
-				return nil, fmt.Errorf("disconnected")
-			} else {
-				log.Printf("unhandled: %s\n", line)
-				continue
-			}
-		}
-		var state GameState
-		// decode the json
-		//		log.Printf("parsing line %s\n", line)
-		err = json.Unmarshal([]byte(line), &state)
-		if err != nil {
-			return nil, err
-		}
-		for _, f := range state.Fleets {
-			f.Target = state.Planets[f.Tid]
-			f.Origin = state.Planets[f.Oid]
-		}
-
-		//		log.Printf("state received: %v\n", state)
-		return &state, nil
-	}
-}
-
-// Send "type1" ships of type 1… from planet "from" to planet "to"
-func (g *Game) Send(from *Planet, to *Planet, fleet Ships) {
-	fmt.Fprintf(g.c, "send %d %d %d %d %d\n", from.Id, to.Id, fleet[0], fleet[1], fleet[2])
-}
-
-// Do nothing
-func (g *Game) Nop() {
-	fmt.Fprintf(g.c, "nop\n")
+/* A single planet as reported by the server */
+type Planet struct {
+	X          int
+	Y          int
+	Production Ships
+	Ships      Ships
+	Owner      Player
+	Id         int
 }
 
 func battleRound(mine, other fShips) fShips {
@@ -226,36 +131,36 @@ func Simulate(mine, other Ships) (minenew, othernew Ships) {
 	return mineS.Ships(), otherS.Ships()
 }
 
-func (s *GameState) MyPlanets() (my []*Planet) {
+func (s *GameState) MyPlanets() (my []Planet) {
 	for _, p := range s.Planets {
-		if p.OwnerId == s.PlayerId {
+		if p.Owner == We {
 			my = append(my, p)
 		}
 	}
 	return
 }
 
-func (s *GameState) TheirPlanets() (theirs []*Planet) {
+func (s *GameState) NotMyPlanets() (theirs []Planet) {
 	for _, p := range s.Planets {
-		if p.OwnerId != s.PlayerId {
+		if p.Owner != We {
 			theirs = append(theirs, p)
 		}
 	}
 	return
 }
 
-func (s *GameState) EnemyPlanets() (enem []*Planet) {
+func (s *GameState) TheirPlanets() (enem []Planet) {
 	for _, p := range s.Planets {
-		if p.OwnerId != s.PlayerId && p.OwnerId != 0 {
+		if p.Owner == They {
 			enem = append(enem, p)
 		}
 	}
 	return
 }
 
-func (s *GameState) NeutralPlanets() (neutr []*Planet) {
+func (s *GameState) NeutralPlanets() (neutr []Planet) {
 	for _, p := range s.Planets {
-		if p.OwnerId == 0 {
+		if p.Owner == Neutral {
 			neutr = append(neutr, p)
 		}
 	}

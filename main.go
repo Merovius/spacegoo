@@ -125,6 +125,14 @@ func (f fShips) Ships() (s Ships) {
 	return
 }
 
+// Split up a fraction of this Fleet
+func (s1 Ships) Split(fraction float64) (s2 Ships) {
+	for i, s := range s1 {
+		s2[i] = int(float64(s) * fraction)
+	}
+	return
+}
+
 // String formats the fleet easily readable
 func (s Ships) String() string {
 	return fmt.Sprintf("(%d %d %d)", s[0], s[1], s[2])

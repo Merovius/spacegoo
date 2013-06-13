@@ -169,10 +169,9 @@ func nextState(c net.Conn, r *bufio.Reader) (*GameState, error) {
 				log.Printf(line)
 				continue
 			} else if strings.Contains(line, "please disconnect") {
-				log.Printf("%s\n", line)
+				log.Printf("%s", line)
 				return nil, fmt.Errorf("disconnected")
 			} else {
-				log.Printf("unhandled: %s\n", line)
 				continue
 			}
 		}

@@ -167,6 +167,7 @@ func (s *GameState) NeutralPlanets() (neutr []Planet) {
 	return
 }
 
+// Calculate the distance of Point (x,y) from the Planet
 func (p1 *Planet) Dist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y

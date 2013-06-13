@@ -108,7 +108,7 @@ func (n nop) String() string {
 }
 
 func (s send) String() string {
-	return fmt.Sprintf("%d %d %d %d %d", s.origin, s.target, s.fleet[0], s.fleet[1], s.fleet[2])
+	return fmt.Sprintf("send %d %d %d %d %d\n", s.origin, s.target, s.fleet[0], s.fleet[1], s.fleet[2])
 }
 
 // Send "type1" ships of type 1… from planet "from" to planet "to"

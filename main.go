@@ -221,3 +221,49 @@ func (fs fleetSorter) Swap(i, j int) {
 func (f Fleets) Sort() {
 	sort.Sort(fleetSorter{f})
 }
+
+// SimulateIncomingFleets takes as a parameter a number of rounds and an planet
+// and calculates every fleet, that arrives in less then rounds. It returns the
+// Ships remaining on the planet
+func (state GameState) SimulateIncomingFleets(p Planet, rounds int) (s Ships) {
+	// BUG(Merovius) This almost certainly is not accurate if the planet is
+	// neutral or attacked at the same time
+	s = p.Ships
+	incoming := state.Incoming(p)
+	incoming.Sort()
+	for i := 1; i < rounds; i++ {
+		var attack Ships
+		for _, f := range incoming {
+			f.Eta -= 1
+			if f.Eta == 0 {
+				switch f.Owner {
+				case p.Owner:
+					s.Add(f.Ships)
+				default:
+					attack.Add(f.Ships)
+				}
+			}
+		}
+		if attack.Sum() > 0 {
+			defnew, attnew := Simulate(s, attack)
+			if defnew.Sum() == 0 {
+				s = attnew
+				p.Owner = 3 - p.Owner
+			} else {
+				s = defnew
+			}
+		}
+	}
+	return
+}
+
+// Incoming fleets to a planet. If no fleets are on their way, returns nil
+func (state GameState) Incoming(p Planet) (f Fleets) {
+	for _, fleet := range state.Fleets {
+		if fleet.Target.Id != p.Id {
+			continue
+		}
+		f = append(f, fleet)
+	}
+	return f
+}

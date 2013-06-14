@@ -198,7 +198,14 @@ func (s *GameState) NeutralPlanets() (neutr []Planet) {
 }
 
 // Dist calculates the distance of the point (x,y) from this Planet
-func (p1 *Planet) Dist(x, y float64) float64 {
+func (p1 *Planet) Dist(x, y int) int {
+	dx := p1.X - x
+	dy := p1.Y - y
+	return int(math.Ceil(math.Sqrt(float64(dx*dx) + float64(dy*dy))))
+}
+
+// FDist calculates the distance of the point (x,y) from this Planet as a float
+func (p1 *Planet) FDist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y
 	return math.Sqrt(dx*dx + dy*dy)
@@ -337,7 +344,7 @@ func (q *Queue) Insert(m Move, pos int) {
 
 // Shift dequeues the first Move and returns it
 func (q *Queue) Shift() (m Move) {
-	if *q == nil || len(*q) == 0 {
+	if len(*q) == 0 {
 		return nil
 	}
 	m = (*q)[0]

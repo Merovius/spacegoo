@@ -39,6 +39,8 @@ type GameState struct {
 	Fleets    Fleets   // All fleets on their way currently
 	Planets   []Planet // All Planets of all Players
 	pid       int
+	we        string
+	they      string
 }
 
 // Fleet is a fleet currently on it's way
@@ -266,4 +268,18 @@ func (state GameState) Incoming(p Planet) (f Fleets) {
 		f = append(f, fleet)
 	}
 	return f
+}
+
+// Return the name of the Player
+func (state GameState) PlayerName(p Player) string {
+	switch p {
+	case Neutral:
+		return "Neutral"
+	case We:
+		return state.we
+	case They:
+		return state.they
+	}
+	// never reached
+	return ""
 }

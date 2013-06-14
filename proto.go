@@ -20,6 +20,12 @@ type send struct {
 	fleet  Ships
 }
 
+type rawPlayer struct {
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Itsme bool   `json:"itsme"`
+}
+
 type rawGameState struct {
 	Round     int         `json:"round"`
 	MaxRounds int         `json:"max_rounds"`
@@ -27,7 +33,7 @@ type rawGameState struct {
 	PlayerId  int         `json:"player_id"`
 	Fleets    []rawFleet  `json:"fleets"`
 	Planets   []rawPlanet `json:"planets"`
-	// TODO: players
+	Players   []rawPlayer `json:"players"`
 }
 
 type rawFleet struct {
@@ -92,6 +98,13 @@ func (rs *rawGameState) Nice() *GameState {
 	s.MaxRounds = rs.MaxRounds
 	s.GameOver = rs.GameOver
 	s.pid = rs.PlayerId
+	for _, pl := range rs.Players {
+		if pl.Itsme {
+			s.we = pl.Name
+		} else {
+			s.they = pl.Name
+		}
+	}
 
 	for _, rp := range rs.Planets {
 		s.Planets = append(s.Planets, rp.Nice(s))

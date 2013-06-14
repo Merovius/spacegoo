@@ -14,7 +14,7 @@
 //	type NopBot struct {}
 //
 //	func (bot *NopBot) Move(state GameState) (Move, error) {
-//	    return state.Nop(), nil
+//	    return Nop{}, nil
 //	}
 //
 //	func main () {

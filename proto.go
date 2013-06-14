@@ -13,11 +13,14 @@ type Move interface {
 	String() string
 }
 
-type nop bool
-type send struct {
-	origin int
-	target int
-	fleet  Ships
+// Do nothing
+type Nop struct{}
+
+// Send Ships from planet "Origin" to planet "Target"
+type Send struct {
+	Origin Planet
+	Target Planet
+	Fleet  Ships
 }
 
 type rawPlayer struct {
@@ -116,22 +119,12 @@ func (rs *rawGameState) Nice() *GameState {
 	return s
 }
 
-func (n nop) String() string {
+func (n Nop) String() string {
 	return "nop\n"
 }
 
-func (s send) String() string {
-	return fmt.Sprintf("send %d %d %d %d %d\n", s.origin, s.target, s.fleet[0], s.fleet[1], s.fleet[2])
-}
-
-// Send "type1" ships of type 1… from planet "from" to planet "to"
-func (s *GameState) Send(from Planet, to Planet, fleet Ships) Move {
-	return send{from.Id, to.Id, fleet}
-}
-
-// Do nothing
-func (s *GameState) Nop() Move {
-	return nop(true)
+func (s Send) String() string {
+	return fmt.Sprintf("send %d %d %d %d %d\n", s.Origin.Id, s.Target.Id, s.Fleet[0], s.Fleet[1], s.Fleet[2])
 }
 
 func Run(bot Bot, server string, user string, pass string) error {
@@ -155,10 +148,7 @@ func Run(bot Bot, server string, user string, pass string) error {
 		if err != nil {
 			return err
 		}
-		move, err := bot.Move(*state)
-		if err != nil {
-			return err
-		}
+		move := bot.Move(*state)
 		fmt.Fprintf(conn, "%s", move.String())
 	}
 

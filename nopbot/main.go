@@ -7,8 +7,8 @@ import (
 
 type NopBot struct{}
 
-func (bot *NopBot) Move(state GameState) (Move, error) {
-	return state.Nop(), nil
+func (bot *NopBot) Move(state GameState) Move {
+	return Nop{}
 }
 
 func main() {

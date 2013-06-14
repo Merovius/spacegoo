@@ -16,7 +16,7 @@ func isTargetedBy(state GameState, my Planet, his Planet) bool {
 	return false
 }
 
-func (bot *ExpandBot) Move(state GameState) (Move, error) {
+func (bot *ExpandBot) Move(state GameState) Move {
 	for _, mp := range state.MyPlanets() {
 		my := mp.Ships
 		for _, tp := range state.NotMyPlanets() {
@@ -26,11 +26,11 @@ func (bot *ExpandBot) Move(state GameState) (Move, error) {
 			th := tp.Ships
 			nmy, _ := Simulate(my, th)
 			if nmy.Sum() > 0 {
-				return state.Send(mp, tp, mp.Ships), nil
+				return Send{mp, tp, mp.Ships}
 			}
 		}
 	}
-	return state.Nop(), nil
+	return Nop{}
 }
 
 func main() {

@@ -26,11 +26,10 @@ const (
 // Bot is the primary interface to the API.
 //
 // You specify in every Round, given a GameState, what you want to do.
-// If you return an error, you loose - so better don't do that.
 //
-// The canonical Moves are GameState.Nop and GameState.Send
+// The canonical Moves are Nop and Send
 type Bot interface {
-	Move(GameState) (Move, error)
+	Move(GameState) Move
 }
 
 // GameState is the complete State, given each round, pretty much as specified

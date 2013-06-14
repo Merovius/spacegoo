@@ -14,6 +14,9 @@ type Fleets []Fleet
 
 type Player int
 
+// Queue of Moves
+type Queue []Move
+
 const (
 	Neutral Player = iota
 	We
@@ -282,4 +285,59 @@ func (state GameState) PlayerName(p Player) string {
 	}
 	// never reached
 	return ""
+}
+
+// Insert puts a move at a specific position, if it is unoccupied.
+// If the slot is occupied, it shift the other moves up one position to free it.
+// If this is not what you want, test the slot for nil before calling Insert.
+func (q *Queue) Insert(m Move, pos int) {
+	// If pos exceeds the capacity of the queue, we can reallocate and
+	// simpley add the move at the new position
+	if cap(*q) < pos {
+		nq := make([]Move, 2*pos)
+		copy(nq, *q)
+		nq[pos] = m
+		*q = nq
+		return
+	}
+
+	// If pos is not occupied yet, we insert the move there
+	if (*q)[pos] == nil {
+		(*q)[pos] = m
+		return
+	}
+
+	// pos is occupied. Move the continuous bit up
+	for i, v := range (*q)[pos:] {
+		if v != nil {
+			continue
+		}
+		// Found a free space, move everything up
+		copy((*q)[pos+1:i+1], (*q)[pos:i])
+		// Insert the move
+		(*q)[pos] = m
+		return
+	}
+
+	// End of the slice. Can we extend it?
+	if len(*q) < cap(*q) {
+		copy((*q)[pos+1:len(*q)+1], (*q)[pos:])
+		(*q)[pos] = m
+		return
+	}
+
+	// We have to reallocate
+	nq := make([]Move, 2*cap(*q))
+	copy(nq, (*q)[:pos])
+	nq[pos] = m
+	copy(nq[pos+1:], (*q)[pos+1:])
+
+	return
+}
+
+// Shift dequeues the first Move and returns it
+func (q *Queue) Shift() (m Move) {
+	m = (*q)[0]
+	(*q) = (*q)[1:]
+	return
 }

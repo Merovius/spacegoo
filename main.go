@@ -337,7 +337,7 @@ func (q *Queue) Insert(m Move, pos int) {
 
 // Shift dequeues the first Move and returns it
 func (q *Queue) Shift() (m Move) {
-	if *q == nil {
+	if *q == nil || len(*q) == 0 {
 		return nil
 	}
 	m = (*q)[0]

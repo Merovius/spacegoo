@@ -346,3 +346,18 @@ func (q *Queue) Shift() (m Move) {
 	(*q) = (*q)[1:]
 	return
 }
+
+// Center calculates the geometric center of a group of planets
+func (pl Planets) Center() (X float64, Y float64) {
+	if len(pl) == 0 {
+		return
+	}
+
+	for _, p := range pl {
+		X += float64(p.X)
+		Y += float64(p.Y)
+	}
+
+	X = X / len(pl)
+	Y = Y / len(pl)
+}

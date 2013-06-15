@@ -358,6 +358,7 @@ func (pl Planets) Center() (X float64, Y float64) {
 		Y += float64(p.Y)
 	}
 
-	X = X / len(pl)
-	Y = Y / len(pl)
+	X = X / float64(len(pl))
+	Y = Y / float64(len(pl))
+	return
 }

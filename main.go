@@ -281,6 +281,17 @@ func (state GameState) Incoming(p Planet) (f Fleets) {
 	return f
 }
 
+// Attacking fleets to a planet. If no fleets are attacking, returns nil
+func (state GameState) Attacking(p Planet) (f Fleets) {
+	for _, fleet := range state.Fleets {
+		if fleet.Target.Id != p.Id || fleet.Owner == p.Owner {
+			continue
+		}
+		f = append(f, fleet)
+	}
+	return f
+}
+
 // Return the name of the Player
 func (state GameState) PlayerName(p Player) string {
 	switch p {

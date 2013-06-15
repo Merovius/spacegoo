@@ -118,7 +118,7 @@ func (f fShips) Sum() float64 {
 
 // Add another fleet to this one
 func (s1 Ships) Add(s2 Ships) (s3 Ships) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		s3[i] = s1[i] + s2[i]
 	}
 	return

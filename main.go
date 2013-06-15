@@ -298,9 +298,9 @@ func (state GameState) PlayerName(p Player) string {
 // If this is not what you want, test the slot for nil before calling Insert.
 func (q *Queue) Insert(m Move, pos int) {
 	// If pos exceeds the capacity of the queue, we can reallocate and
-	// simpley add the move at the new position
-	if cap(*q) < pos {
-		nq := make([]Move, 2*pos)
+	// simply add the move at the new position
+	if pos >= len(*q) {
+		nq := make([]Move, pos+10)
 		copy(nq, *q)
 		nq[pos] = m
 		*q = nq
@@ -313,31 +313,25 @@ func (q *Queue) Insert(m Move, pos int) {
 		return
 	}
 
+	// Make sure, there is room
+	if (*q)[len(*q)-1] != nil {
+		*q = append(*q, nil)
+	}
+
 	// pos is occupied. Move the continuous bit up
 	for i, v := range (*q)[pos:] {
 		if v != nil {
 			continue
 		}
+		// i is relative to to (*q)[pos:]. Make it relative to *q
+		i += pos
 		// Found a free space, move everything up
 		copy((*q)[pos+1:i+1], (*q)[pos:i])
 		// Insert the move
 		(*q)[pos] = m
 		return
 	}
-
-	// End of the slice. Can we extend it?
-	if len(*q) < cap(*q) {
-		copy((*q)[pos+1:len(*q)+1], (*q)[pos:])
-		(*q)[pos] = m
-		return
-	}
-
-	// We have to reallocate
-	nq := make([]Move, 2*cap(*q))
-	copy(nq, (*q)[:pos])
-	nq[pos] = m
-	copy(nq[pos+1:], (*q)[pos+1:])
-
+	// Never reached
 	return
 }
 

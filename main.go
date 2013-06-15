@@ -17,6 +17,8 @@ type Player int
 // Queue of Moves
 type Queue []Move
 
+type Planets []Planet
+
 const (
 	Neutral Player = iota
 	We
@@ -35,11 +37,11 @@ type Bot interface {
 // GameState is the complete State, given each round, pretty much as specified
 // in the protocol
 type GameState struct {
-	Round     int      // The current Gameround
-	MaxRounds int      // The maximum number of rounds
-	GameOver  bool     // If the game is over
-	Fleets    Fleets   // All fleets on their way currently
-	Planets   []Planet // All Planets of all Players
+	Round     int     // The current Gameround
+	MaxRounds int     // The maximum number of rounds
+	GameOver  bool    // If the game is over
+	Fleets    Fleets  // All fleets on their way currently
+	Planets   Planets // All Planets of all Players
 	pid       int
 	we        string
 	they      string
@@ -157,7 +159,7 @@ func Simulate(mine, other Ships) (minenew, othernew Ships) {
 }
 
 // MyPlanets gives you all Planets under your control
-func (s *GameState) MyPlanets() (my []Planet) {
+func (s *GameState) MyPlanets() (my Planets) {
 	for _, p := range s.Planets {
 		if p.Owner == We {
 			my = append(my, p)
@@ -167,7 +169,7 @@ func (s *GameState) MyPlanets() (my []Planet) {
 }
 
 // NotMyPlanets gives you all neutral and enemy Planets
-func (s *GameState) NotMyPlanets() (theirs []Planet) {
+func (s *GameState) NotMyPlanets() (theirs Planets) {
 	for _, p := range s.Planets {
 		if p.Owner != We {
 			theirs = append(theirs, p)
@@ -177,7 +179,7 @@ func (s *GameState) NotMyPlanets() (theirs []Planet) {
 }
 
 // TheirPlanets gives you all enemy Planets
-func (s *GameState) TheirPlanets() (enem []Planet) {
+func (s *GameState) TheirPlanets() (enem Planets) {
 	for _, p := range s.Planets {
 		if p.Owner == They {
 			enem = append(enem, p)
@@ -187,7 +189,7 @@ func (s *GameState) TheirPlanets() (enem []Planet) {
 }
 
 // NeutralPlanets gives you all neutral Planets
-func (s *GameState) NeutralPlanets() (neutr []Planet) {
+func (s *GameState) NeutralPlanets() (neutr Planets) {
 	for _, p := range s.Planets {
 		if p.Owner == Neutral {
 			neutr = append(neutr, p)

@@ -41,7 +41,7 @@ type rawGameState struct {
 
 type rawFleet struct {
 	Id    int   `json:"id"`
-	Owner int   `json:"owner"`
+	Owner int   `json:"owner_id"`
 	Oid   int   `json:"origin"`
 	Tid   int   `json:"target"`
 	Ships Ships `json:"ships"`

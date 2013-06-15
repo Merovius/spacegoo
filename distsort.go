@@ -32,6 +32,8 @@ func (sorter planetsByDist) Swap(i, j int) {
 	sorter.Planets[i] = t
 }
 
+// SortByFDist sorts the planets by distance from a given point (in
+// float-coordinates)
 func (pl Planets) SortByFDist(X, Y float64) Planets {
 	plcpy := make(Planets, len(pl))
 	sorter := planetsByDist{plcpy, false, 0, 0, X, Y}
@@ -39,6 +41,8 @@ func (pl Planets) SortByFDist(X, Y float64) Planets {
 	return sorter.Planets
 }
 
+// SortByDist sorts the planets by distance from a given point (in
+// int-coordinates)
 func (pl Planets) SortByDist(X, Y int) Planets {
 	plcpy := make(Planets, len(pl))
 	sorter := planetsByDist{plcpy, false, X, Y, 0.0, 0.0}

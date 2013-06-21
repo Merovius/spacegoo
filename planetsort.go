@@ -73,5 +73,5 @@ func (pl Planets) SortByShips() Planets {
 	plcpy := make(Planets, len(pl))
 	copy(plcpy, pl)
 	sort.Sort(planetsByShips(plcpy))
-	return pl
+	return plcpy
 }

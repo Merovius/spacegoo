@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/Merovius/spacegoo/master"
 	"log"
-	"strings"
 
 	// List of bots
 	_ "github.com/Merovius/spacegoo/clowder"
@@ -32,5 +31,6 @@ func main() {
 	if name == "" || pass == "" {
 		log.Fatal("Expected botname password")
 	}
-	master.Run(name, *server, strings.ToLower(name), strings.ToLower(pass))
+	log.Println("user:", user, "pass:", pass)
+	master.Run(name, *server, name, pass)
 }

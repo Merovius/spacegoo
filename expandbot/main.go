@@ -78,11 +78,7 @@ func (bot *ExpandBot) Move(state GameState) Move {
 			if isTargetedBy(state, mp, tp) {
 				continue
 			}
-			dist := tp.Dist(mp.X, mp.Y)
 			th := tp.Ships
-			if tp.Owner == They {
-				th = th.Add(tp.Production.Scale(float64(dist + 1)))
-			}
 			nmy, _ := Simulate(my, th)
 			if nmy.Sum() > 0 {
 				return Send{mp, tp, mp.Ships}

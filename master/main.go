@@ -6,11 +6,11 @@ import (
 )
 
 var (
-	bots   = make(map[string]spacegoo.Bot)
+	Bots   = make(map[string]spacegoo.Bot)
 )
 
 func Run(name string, server string, user string, pass string) {
-	if bot, ok := bots[name]; ok {
+	if bot, ok := Bots[name]; ok {
 		spacegoo.Run(bot, server, user, pass)
 		return
 	}
@@ -21,8 +21,8 @@ func Register(name string, bot spacegoo.Bot) {
 	if bot == nil {
 		panic("bot is nil")
 	}
-	if _, dup := bots[name]; dup {
+	if _, dup := Bots[name]; dup {
 		panic("name already taken")
 	}
-	bots[name] = bot
+	Bots[name] = bot
 }

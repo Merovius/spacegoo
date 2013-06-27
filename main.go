@@ -106,7 +106,7 @@ func (s Ships) Sum() int {
 }
 
 func (s Ships) float() (f fShips) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		f[i] = float64(s[i])
 	}
 	return
@@ -125,7 +125,7 @@ func (s1 Ships) Add(s2 Ships) (s3 Ships) {
 }
 
 func (f fShips) Ships() (s Ships) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		s[i] = int(f[i])
 	}
 	return

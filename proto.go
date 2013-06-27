@@ -37,6 +37,7 @@ type rawGameState struct {
 	Fleets    []rawFleet  `json:"fleets"`
 	Planets   []rawPlanet `json:"planets"`
 	Players   []rawPlayer `json:"players"`
+	Winner    int         `json:"winner"`
 }
 
 type rawFleet struct {
@@ -116,6 +117,14 @@ func (rs *rawGameState) Nice() *GameState {
 	for _, rf := range rs.Fleets {
 		s.Fleets = append(s.Fleets, rf.Nice(s))
 	}
+	switch rs.Winner {
+	case s.pid:
+		s.Winner = We
+	case 0:
+		s.Winner = Neutral
+	default:
+		s.Winner = They
+	}
 	return s
 }
 
@@ -127,17 +136,17 @@ func (s Send) String() string {
 	return fmt.Sprintf("send %d %d %d %d %d\n", s.Origin.Id, s.Target.Id, s.Fleet[0], s.Fleet[1], s.Fleet[2])
 }
 
-func Run(bot Bot, server string, user string, pass string) error {
+func Run(bot Bot, server string, user string, pass string) (last *GameState, err error) {
 	conn, err := net.Dial("tcp", server)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer conn.Close()
 
 	r := bufio.NewReader(conn)
 	_, err = r.ReadString('\n')
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("logging in with user %s, pass %s\n", user, pass)
@@ -146,13 +155,16 @@ func Run(bot Bot, server string, user string, pass string) error {
 	for {
 		state, err := nextState(conn, r)
 		if err != nil {
-			return err
+			return nil, err
+		}
+		if state.GameOver {
+			return state, nil
 		}
 		move := bot.Move(*state)
 		fmt.Fprintf(conn, "%s", move.String())
 	}
 
-	return nil
+	return nil, nil
 }
 
 func nextState(c net.Conn, r *bufio.Reader) (*GameState, error) {
@@ -184,6 +196,7 @@ func nextState(c net.Conn, r *bufio.Reader) (*GameState, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		return state.Nice(), nil
 	}
 }

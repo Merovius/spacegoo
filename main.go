@@ -40,6 +40,7 @@ type GameState struct {
 	Round     int     // The current Gameround
 	MaxRounds int     // The maximum number of rounds
 	GameOver  bool    // If the game is over
+	Winner    Player  // The player that won
 	Fleets    Fleets  // All fleets on their way currently
 	Planets   Planets // All Planets of all Players
 	pid       int

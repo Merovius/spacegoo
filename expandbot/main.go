@@ -1,14 +1,18 @@
-package main
+package expandbot
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 )
 
 type ExpandBot struct{}
 type FriedzClone struct{}
 
 var friedzclone FriedzClone
+
+func init() {
+	master.Register("expandbot", &ExpandBot{})
+}
 
 func (bot *FriedzClone) Move(state GameState) Move {
 	mine := state.MyPlanets()
@@ -74,7 +78,11 @@ func (bot *ExpandBot) Move(state GameState) Move {
 			if isTargetedBy(state, mp, tp) {
 				continue
 			}
+			dist := tp.Dist(mp.X, mp.Y)
 			th := tp.Ships
+			if tp.Owner == They {
+				th = th.Add(tp.Production.Scale(float64(dist + 1)))
+			}
 			nmy, _ := Simulate(my, th)
 			if nmy.Sum() > 0 {
 				return Send{mp, tp, mp.Ships}
@@ -82,8 +90,4 @@ func (bot *ExpandBot) Move(state GameState) Move {
 		}
 	}
 	return Nop{}
-}
-
-func main() {
-	boilerplate.Run(&ExpandBot{})
 }

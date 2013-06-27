@@ -1,8 +1,8 @@
-package foftle
+package fofte
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 )
 
 type FoFtE struct{}
@@ -132,6 +132,6 @@ func (bot *FoFtE) Move(state GameState) Move {
 	return bot.Expand(state, safe)
 }
 
-func main() {
-	boilerplate.Run(&FoFtE{})
+func init() {
+	master.Register("FoFtE", &FoFtE{})
 }

@@ -1,8 +1,8 @@
-package main
+package mobber
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 	"math/rand"
 )
 
@@ -43,6 +43,6 @@ func (bot *Mobber) Move(state GameState) Move {
 	return Send{p, bot.Victim, p.Ships}
 }
 
-func main() {
-	boilerplate.Run(&Mobber{})
+func init() {
+	master.Register("mobber", &Mobber{})
 }

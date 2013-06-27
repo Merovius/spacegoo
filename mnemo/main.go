@@ -3,7 +3,7 @@ package mnemo
 import (
 	"fmt"
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 	"sort"
 )
 
@@ -174,6 +174,6 @@ func (s attackSetSlice) Swap(i, j int) {
 	s[j] = t
 }
 
-func main() {
-	boilerplate.Run(&Mnemo{})
+func init() {
+	master.Register("mnemo", &Mnemo{})
 }

@@ -1,8 +1,8 @@
-package main
+package clowder
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 )
 
 type Clowder struct {
@@ -34,6 +34,6 @@ func (bot *Clowder) Move(state GameState) Move {
 	return Send{p, bot.Target, p.Ships}
 }
 
-func main() {
-	boilerplate.Run(&Clowder{})
+func init() {
+	master.Register("clowder", &Clowder{})
 }

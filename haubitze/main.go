@@ -1,12 +1,12 @@
-package main
+package haubitze
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 	"math/rand"
 )
 
-type Mobber struct {
+type Haubitze struct {
 	Victim Planet
 }
 
@@ -22,7 +22,7 @@ func chooseVictim(state GameState) Planet {
 	return NotMine[n]
 }
 
-func (bot *Mobber) Move(state GameState) Move {
+func (bot *Haubitze) Move(state GameState) Move {
 	if state.Round%10 == 0 {
 		bot.Victim = chooseVictim(state)
 	}
@@ -38,6 +38,6 @@ func (bot *Mobber) Move(state GameState) Move {
 	return Send{p, bot.Victim, p.Ships}
 }
 
-func main() {
-	boilerplate.Run(&Mobber{})
+func init() {
+	master.Register("haubitze", &Haubitze{})
 }

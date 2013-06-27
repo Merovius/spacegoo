@@ -1,8 +1,8 @@
-package main
+package hopper
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 	"math/rand"
 )
 
@@ -160,8 +160,8 @@ func (bot *Hopper) Move(state GameState) Move {
 	return m
 }
 
-func main() {
+func init() {
 	bot := &Hopper{}
 	bot.State = bot.begin
-	boilerplate.Run(bot)
+	master.Register("hopper", bot)
 }

@@ -1,8 +1,8 @@
-package main
+package greedo
 
 import (
 	. "github.com/Merovius/spacegoo"
-	"github.com/Merovius/spacegoo/boilerplate"
+	"github.com/Merovius/spacegoo/master"
 )
 
 type Greedo struct{}
@@ -61,6 +61,6 @@ func (bot *Greedo) Move(state GameState) Move {
 	return Nop{}
 }
 
-func main() {
-	boilerplate.Run(&Greedo{})
+func init() {
+	master.Register("greedo", &Greedo{})
 }

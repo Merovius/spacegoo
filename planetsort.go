@@ -75,3 +75,12 @@ func (pl Planets) SortByShips() Planets {
 	sort.Sort(planetsByShips(plcpy))
 	return plcpy
 }
+
+// Reverse the order of the slice
+func (pl Planets) Reverse() Planets {
+	var ret Planets
+	for i := len(pl) - 1; i >= 0; i-- {
+		ret = append(ret, pl[i])
+	}
+	return ret
+}

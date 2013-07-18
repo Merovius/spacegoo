@@ -27,7 +27,7 @@ func (bot *Mobber) Move(state GameState) Move {
 		bot.Victim = chooseVictim(state)
 		bot.init = true
 	}
-	bot.Victim = state.Planets[bot.Victim.Id]
+	bot.Victim = state.Planets.Lookup(bot.Victim.Id)
 	if bot.Victim.Owner == We || state.Round%10 == 0 {
 		bot.Victim = chooseVictim(state)
 	}

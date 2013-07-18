@@ -15,7 +15,7 @@ func (bot *Clowder) Move(state GameState) Move {
 	if len(mine) == 0 {
 		return Nop{}
 	}
-	bot.Target = state.Planets[bot.Target.Id]
+	bot.Target = state.Planets.Lookup(bot.Target.Id)
 
 	if !bot.init || bot.Target.Owner == We {
 		X, Y := mine.Center()

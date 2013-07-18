@@ -374,3 +374,13 @@ func (pl Planets) Center() (X float64, Y float64) {
 	Y = Y / float64(len(pl))
 	return
 }
+
+// Lookup looks up a planet by id
+func (pl Planets) Lookup(id int) Planet {
+	for _, p := range pl {
+		if p.Id == id {
+			return p
+		}
+	}
+	return pl[0]
+}

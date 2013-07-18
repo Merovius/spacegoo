@@ -97,6 +97,9 @@ func (bot *Hopper) incoming(state GameState) (Move, State) {
 	incoming := state.Attacking(bot.Home)
 	incoming.Sort()
 
+	if len(incoming) == 0 {
+		return Nop{}, bot.awaitingAttack
+	}
 	first := incoming[0]
 
 	if first.Eta == state.Round {
@@ -152,8 +155,8 @@ func (bot *Hopper) migrate(state GameState) (Move, State) {
 }
 
 func (bot *Hopper) Move(state GameState) Move {
-	bot.Home = state.Planets[bot.Home.Id]
-	bot.NewHome = state.Planets[bot.NewHome.Id]
+	bot.Home = state.Planets.Lookup(bot.Home.Id)
+	bot.NewHome = state.Planets.Lookup(bot.NewHome.Id)
 
 	m, s := bot.State(state)
 	bot.State = s

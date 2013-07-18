@@ -7,11 +7,49 @@ import (
 
 type ExpandBot struct{}
 type FriedzClone struct{}
+type Square struct {
+	init   bool
+	Victim Planet
+}
 
 var friedzclone FriedzClone
+var square Square
 
 func init() {
 	master.Register("expandbot", &ExpandBot{})
+}
+
+func chooseVictim(state GameState) Planet {
+	Theirs := state.NotMyPlanets()
+	if len(Theirs) > 0 {
+		Theirs = Theirs.SortByShips()
+		return Theirs[0]
+	}
+
+	n := rand.Intn(len(state.Planets))
+	return state.Planets[n]
+}
+
+func (bot *Square) Move(state GameState) Move {
+	if !bot.init {
+		bot.Victim = chooseVictim(state)
+		bot.init = true
+	}
+	bot.Victim = state.Planets.Lookup(bot.Victim.Id)
+
+	if bot.Victim.Owner == We {
+		bot.Victim = chooseVictim(state)
+	}
+
+	Mine := state.MyPlanets()
+	if len(Mine) == 0 {
+		return Nop{}
+	}
+
+	n := rand.Intn(len(Mine))
+	p := Mine[n]
+
+	return Send{p, bot.Victim, p.Production}
 }
 
 func (bot *FriedzClone) Move(state GameState) Move {
@@ -70,6 +108,9 @@ func (bot *ExpandBot) Move(state GameState) Move {
 	}
 	if state.PlayerName(They) == "intercept" {
 		return friedzclone.Move(state)
+	}
+	if state.PlayerName(They) == "circle" {
+		return square.Move(state)
 	}
 
 	for _, mp := range state.MyPlanets() {

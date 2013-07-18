@@ -3,14 +3,12 @@ package spacegoo
 import (
 	"fmt"
 	"math"
-	"sort"
 )
 
 // Ships designates a tuple of Ships e.g. for fleets, production…
 type Ships [3]int
 
 type fShips [3]float64
-type Fleets []Fleet
 
 type Player int
 
@@ -211,29 +209,6 @@ func (p1 *Planet) FDist(x, y float64) float64 {
 	dx := float64(p1.X) - x
 	dy := float64(p1.Y) - y
 	return math.Sqrt(dx*dx + dy*dy)
-}
-
-type fleetSorter struct {
-	f Fleets
-}
-
-func (fs fleetSorter) Len() int {
-	return len(fs.f)
-}
-
-func (fs fleetSorter) Less(i, j int) bool {
-	return fs.f[i].Eta < fs.f[j].Eta
-}
-
-func (fs fleetSorter) Swap(i, j int) {
-	t := fs.f[i]
-	fs.f[j] = fs.f[i]
-	fs.f[i] = t
-}
-
-// Sort the Fleets ascending by ETA
-func (f Fleets) Sort() {
-	sort.Sort(fleetSorter{f})
 }
 
 // SimulateIncomingFleets takes as a parameter a number of rounds and an planet

@@ -30,8 +30,8 @@ func (sorter planetsByDist) Less(i, j int) bool {
 
 func (sorter planetsByDist) Swap(i, j int) {
 	t := sorter.Planets[i]
-	sorter.Planets[j] = sorter.Planets[i]
-	sorter.Planets[i] = t
+	sorter.Planets[i] = sorter.Planets[j]
+	sorter.Planets[j] = t
 }
 
 func (sorter planetsByShips) Len() int {

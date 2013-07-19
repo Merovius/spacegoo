@@ -359,3 +359,27 @@ func (pl Planets) Lookup(id int) Planet {
 	}
 	return pl[0]
 }
+
+// MyProduction returns the sum of the production on all our planets
+func (st *GameState) MyProduction() Ships {
+	var sh Ships
+	for _, p := range st.Planets {
+		if p.Owner != We {
+			continue
+		}
+		sh = sh.Add(p.Production)
+	}
+	return sh
+}
+
+// TheirProduction returns the sum of the production on all enemy planets
+func (st *GameState) TheirProduction() Ships {
+	var sh Ships
+	for _, p := range st.Planets {
+		if p.Owner != They {
+			continue
+		}
+		sh = sh.Add(p.Production)
+	}
+	return sh
+}

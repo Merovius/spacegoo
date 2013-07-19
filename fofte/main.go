@@ -12,7 +12,7 @@ func (bot *FoFtE) Fight(state GameState, p Planet) (Move, bool) {
 	if len(incoming) == 0 {
 		return Nop{}, true
 	}
-	incoming.Sort()
+	incoming = incoming.SortByEta()
 
 	my := p.Ships
 	var th Ships
@@ -65,7 +65,7 @@ func (bot *FoFtE) Flight(state GameState, p Planet) (Move, bool) {
 		if len(attacking) == 0 {
 			return Send{p, mp, p.Ships}, true
 		}
-		attacking.Sort()
+		attacking = attacking.SortByEta()
 
 		if mp.Dist(p.X, p.Y) < attacking[0].Eta-state.Round-1 {
 			return Nop{}, true

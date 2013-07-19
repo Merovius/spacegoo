@@ -25,8 +25,11 @@ func (fs fleetByEtaSorter) Swap(i, j int) {
 }
 
 // Sort the Fleets ascending by ETA
-func (f Fleets) Sort() {
-	sort.Sort(fleetByEtaSorter{f})
+func (f Fleets) SortByEta() Fleets {
+	fltcpy := make(Fleets, len(f))
+	copy(fltcpy, f)
+	sort.Sort(fleetByEtaSorter{fltcpy})
+	return fltcpy
 }
 
 type fleetByShipsSorter struct {
@@ -47,7 +50,19 @@ func (fs fleetByShipsSorter) Swap(i, j int) {
 	fs.f[i] = t
 }
 
-// Sort the Fleets ascending by ETA
-func (f Fleets) SortByStrength() {
-	sort.Sort(fleetByShipsSorter{f})
+// Sort the Fleets ascending by Number of ships
+func (f Fleets) SortByShips() Fleets {
+	fltcpy := make(Fleets, len(f))
+	copy(fltcpy, f)
+	sort.Sort(fleetByShipsSorter{fltcpy})
+	return fltcpy
+}
+
+// Reverse the order of the Fleet-slice
+func (f Fleets) Reverse() Fleets {
+	var fl Fleets
+	for i := len(f) - 1; i >= 0; i-- {
+		fl = append(fl, f[i])
+	}
+	return fl
 }

@@ -219,7 +219,7 @@ func (state GameState) SimulateIncomingFleets(p Planet, rounds int) (s Ships) {
 	// neutral or attacked at the same time
 	s = p.Ships
 	incoming := state.Incoming(p)
-	incoming.Sort()
+	incoming = incoming.SortByEta()
 	for i := 1; i < rounds; i++ {
 		var attack Ships
 		for _, f := range incoming {

@@ -95,7 +95,7 @@ func (bot *Hopper) incoming(state GameState) (Move, State) {
 	mine := state.MyPlanets()
 
 	incoming := state.Attacking(bot.Home)
-	incoming.Sort()
+	incoming = incoming.SortByEta()
 
 	if len(incoming) == 0 {
 		return Nop{}, bot.awaitingAttack
@@ -144,7 +144,7 @@ func (bot *Hopper) migrate(state GameState) (Move, State) {
 		}
 	}
 
-	mine.SortByShips()
+	mine = mine.SortByShips()
 	for i := len(mine) - 1; i >= 0; i-- {
 		if bot.NewHome.Dist(mine[i].X, mine[i].Y) >= invading.Eta {
 			return Send{mine[i], bot.NewHome, mine[i].Ships}, bot.migrate

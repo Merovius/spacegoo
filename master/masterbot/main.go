@@ -16,6 +16,7 @@ import (
 	_ "github.com/Merovius/spacegoo/mnemo"
 	_ "github.com/Merovius/spacegoo/mobber"
 	_ "github.com/Merovius/spacegoo/nopbot"
+	_ "github.com/Merovius/spacegoo/schizobot"
 	_ "github.com/Merovius/spacegoo/square"
 )
 

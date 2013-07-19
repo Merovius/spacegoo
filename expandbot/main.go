@@ -3,6 +3,8 @@ package expandbot
 import (
 	. "github.com/Merovius/spacegoo"
 	"github.com/Merovius/spacegoo/master"
+
+	"math/rand"
 )
 
 type ExpandBot struct{}

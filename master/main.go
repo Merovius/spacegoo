@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	Bots   = make(map[string]spacegoo.Bot)
+	Bots = make(map[string]spacegoo.Bot)
 )
 
 func Run(name string, server string, user string, pass string) {

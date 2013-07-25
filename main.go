@@ -360,6 +360,20 @@ func (pl Planets) Lookup(id int) Planet {
 	return pl[0]
 }
 
+// Nearest planet to given coordinates. Panics, if called on empty planets
+func (pl Planets) Nearest(X int, Y int) Planet {
+	fx, fy := float64(X), float64(Y)
+	ret := pl[0]
+	dist := ret.FDist(fx, fy)
+	for _, p := range pl {
+		if p.FDist(fx, fy) < dist {
+			dist = p.FDist(fx, fy)
+			ret = p
+		}
+	}
+	return ret
+}
+
 // MyProduction returns the sum of the production on all our planets
 func (st *GameState) MyProduction() Ships {
 	var sh Ships
